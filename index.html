@@ -131,8 +131,8 @@
             html2canvas(captureArea, {
                 useCORS: true, // CORS 문제 방지
                 scale: 2, // 고해상도 캡처
-                width: width, // 캡처 영역의 너비 설정
-                height: height, // 캡처 영역의 높이 설정
+                width: 100%, // 캡처 영역의 너비 설정
+                height: 100%, // 캡처 영역의 높이 설정
                 backgroundColor: null // 투명 배경 유지
             }).then((canvas) => {
                 const link = document.createElement('a');
