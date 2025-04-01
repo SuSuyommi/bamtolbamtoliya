@@ -12,7 +12,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #fce4ec; /* 부드러운 핑크 배경 */
+            background-color: #fce4ec;
         }
 
         .card {
@@ -35,19 +35,19 @@
         .base-image {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 기본 이미지의 비율을 유지 */
+            object-fit: contain;
             border-radius: 10px;
         }
 
         .overlay-image {
             position: absolute;
-            top: 62%; /* 오버레이 이미지의 Y 좌표 조정 */
-            left: 51%; /* 오버레이 이미지의 X 좌표 조정 */
+            top: 62%;
+            left: 51%;
             transform: translate(-50%, -50%);
-            width: 165px; /* 선택한 이미지 크기 */
+            width: 165px;
             height: 165px;
-            border-radius: 50%; /* 원형으로 만들기 */
-            object-fit: cover; /* 이미지가 원형 안에 잘 맞도록 조정 */
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .upload-button, .save-button {
@@ -55,7 +55,7 @@
             padding: 10px 20px;
             font-size: 16px;
             color: #fff;
-            background-color: #ff80ab; /* 귀여운 핑크 버튼 */
+            background-color: #ff80ab;
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -65,16 +65,16 @@
         }
 
         .upload-button:hover, .save-button:hover {
-            background-color: #ff4081; /* 버튼 호버 시 더 진한 핑크 */
-            transform: scale(1.05); /* 살짝 확대 */
+            background-color: #ff4081;
+            transform: scale(1.05);
         }
 
         .upload-button:active, .save-button:active {
-            transform: scale(0.95); /* 클릭 시 살짝 축소 */
+            transform: scale(0.95);
         }
 
         input[type="file"] {
-            display: none; /* 파일 선택 버튼 숨기기 */
+            display: none;
         }
 
         .card-text {
@@ -86,7 +86,7 @@
 
         .button-container {
             text-align: center;
-            margin-top: 10px; /* 버튼과 이미지 사이 간격 */
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -97,7 +97,7 @@
             <img src="bamtol.png" alt="기본 이미지" class="base-image">
             <img id="overlayImage" src="overlay-image.png" alt="겹칠 이미지" class="overlay-image">
         </div>
-        <div class="button-container">
+        <div class="button-container" id="buttonContainer">
             <label for="imageInput" class="upload-button">이미지 선택</label>
             <input type="file" id="imageInput" accept="image/*">
             <button class="save-button" id="saveButton">이미지 저장</button>
@@ -110,31 +110,33 @@
         const overlayImage = document.getElementById('overlayImage');
         const saveButton = document.getElementById('saveButton');
         const captureArea = document.getElementById('captureArea');
+        const buttonContainer = document.getElementById('buttonContainer');
 
-        // 이미지 선택 이벤트
         imageInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    overlayImage.src = e.target.result; // 선택한 이미지를 겹칠 이미지로 설정
+                    overlayImage.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // 이미지 저장 버튼 클릭 이벤트
         saveButton.addEventListener('click', () => {
-            const width = captureArea.offsetWidth; // 캡처 영역의 실제 너비
-            const height = captureArea.offsetHeight; // 캡처 영역의 실제 높이
-
+            buttonContainer.style.display = 'none'; // 버튼 숨기기
+            
             html2canvas(captureArea, {
-                useCORS: true, // CORS 문제 방지
-                scale: 2, // 고해상도 캡처
-                backgroundColor: null // 투명 배경 유지
+                useCORS: true,
+                scale: 2,
+                backgroundColor: null,
+                width: 350,
+                height: captureArea.offsetHeight
             }).then((canvas) => {
+                buttonContainer.style.display = 'block'; // 버튼 다시 표시
+                
                 const link = document.createElement('a');
-                link.download = 'card-image.png'; // 저장될 파일 이름
+                link.download = 'card-image.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
