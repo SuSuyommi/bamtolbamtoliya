@@ -97,11 +97,11 @@
             <img src="bamtol.png" alt="기본 이미지" class="base-image">
             <img id="overlayImage" src="overlay-image.png" alt="겹칠 이미지" class="overlay-image">
         </div>
-    </div>
-    <div class="button-container">
-        <label for="imageInput" class="upload-button">이미지 선택</label>
-        <input type="file" id="imageInput" accept="image/*">
-        <button class="save-button" id="saveButton">이미지 저장</button>
+        <div class="button-container">
+            <label for="imageInput" class="upload-button">이미지 선택</label>
+            <input type="file" id="imageInput" accept="image/*">
+            <button class="save-button" id="saveButton">이미지 저장</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -127,7 +127,7 @@
         saveButton.addEventListener('click', () => {
             html2canvas(captureArea, {
                 useCORS: true, // CORS 문제 방지
-                scale: 2 // 고해상도 캡처
+                scale: 2, // 고해상도 캡처
             }).then((canvas) => {
                 const link = document.createElement('a');
                 link.download = 'card-image.png'; // 저장될 파일 이름
