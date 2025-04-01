@@ -30,15 +30,19 @@
             width: 100%;
             height: 300px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .base-image {
-            width: 100%;
+            width: auto;
             height: 100%;
+            max-width: 100%;
             object-fit: contain;
             border-radius: 10px;
+            display: inline-block;
         }
-
         .overlay-image {
             position: absolute;
             top: 62%;
@@ -69,10 +73,6 @@
             transform: scale(1.05);
         }
 
-        .upload-button:active, .save-button:active {
-            transform: scale(0.95);
-        }
-
         input[type="file"] {
             display: none;
         }
@@ -95,7 +95,7 @@
         <div class="card-text">나는야 밤톨 대왕이다</div>
         <div class="image-container">
             <img src="bamtol.png" alt="기본 이미지" class="base-image">
-            <img id="overlayImage" src="overlay-image.png" alt="겹칠 이미지" class="overlay-image">
+            <img id="overlayImage" src="overlay-image.png" alt="" class="overlay-image">
         </div>
         <div class="button-container" id="buttonContainer">
             <label for="imageInput" class="upload-button">이미지 선택</label>
@@ -124,22 +124,49 @@
         });
 
         saveButton.addEventListener('click', () => {
-            buttonContainer.style.display = 'none'; // 버튼 숨기기
-            
-            html2canvas(captureArea, {
-                useCORS: true,
-                scale: 2,
-                backgroundColor: null,
-                width: 350,
-                height: captureArea.offsetHeight
-            }).then((canvas) => {
-                buttonContainer.style.display = 'block'; // 버튼 다시 표시
+            buttonContainer.style.display = 'none';
+
+            setTimeout(() => {
+                // 현재 디바이스의 픽셀 비율 가져오기
+                const pixelRatio = window.devicePixelRatio || 1;
                 
-                const link = document.createElement('a');
-                link.download = 'card-image.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
+                html2canvas(captureArea, {
+                    scale: pixelRatio * 2, // 디바이스 픽셀 비율 고려
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: true, // 디버깅을 위해 로깅 활성화
+                    backgroundColor: null,
+                    imageTimeout: 0,
+                    onclone: function(clonedDoc) {
+                        const clonedOverlay = clonedDoc.getElementById('overlayImage');
+                        if (clonedOverlay) {
+                            const originalOverlay = document.getElementById('overlayImage');
+                            const styles = window.getComputedStyle(originalOverlay);
+                            
+                            // 모든 스타일 속성을 명시적으로 복사
+                            for (const prop of styles) {
+                                clonedOverlay.style[prop] = styles.getPropertyValue(prop);
+                            }
+                            
+                            // 중요 스타일 속성 명시적 설정
+                            clonedOverlay.style.position = 'absolute';
+                            clonedOverlay.style.top = styles.top;
+                            clonedOverlay.style.left = styles.left;
+                            clonedOverlay.style.width = styles.width;
+                            clonedOverlay.style.height = styles.height;
+                            clonedOverlay.style.transform = styles.transform;
+                            clonedOverlay.style.borderRadius = styles.borderRadius;
+                            clonedOverlay.style.objectFit = 'cover';
+                        }
+                    }
+                }).then((canvas) => {
+                    const link = document.createElement('a');
+                    link.download = 'merged-image.png';
+                    link.href = canvas.toDataURL('image/png', 1.0); // 최대 품질로 설정
+                    link.click();
+                    buttonContainer.style.display = 'block';
+                });
+            }, 300);
         });
     </script>
 </body>
