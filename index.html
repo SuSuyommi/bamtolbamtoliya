@@ -41,11 +41,11 @@
 
         .overlay-image {
             position: absolute;
-            top: 60%; /* 오버레이 이미지의 Y 좌표 조정 */
+            top: 65%; /* 오버레이 이미지의 Y 좌표 조정 */
             left: 50%; /* 오버레이 이미지의 X 좌표 조정 */
             transform: translate(-50%, -50%);
-            width: 165px; /* 선택한 이미지 크기 (조금 더 크게 설정) */
-            height: 165px;
+            width: 180px; /* 선택한 이미지 크기 */
+            height: 180px;
             border-radius: 50%; /* 원형으로 만들기 */
             object-fit: cover; /* 이미지가 원형 안에 잘 맞도록 조정 */
         }
@@ -91,17 +91,17 @@
     </style>
 </head>
 <body>
-    <div class="card">
+    <div id="captureArea" class="card">
         <div class="card-text">나는야 밤톨 대왕이다</div>
-        <div class="image-container" id="captureArea">
+        <div class="image-container">
             <img src="bamtol.png" alt="기본 이미지" class="base-image">
             <img id="overlayImage" src="overlay-image.png" alt="겹칠 이미지" class="overlay-image">
         </div>
-        <div class="button-container">
-            <label for="imageInput" class="upload-button">이미지 선택</label>
-            <input type="file" id="imageInput" accept="image/*">
-            <button class="save-button" id="saveButton">이미지 저장</button>
-        </div>
+    </div>
+    <div class="button-container">
+        <label for="imageInput" class="upload-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <button class="save-button" id="saveButton">이미지 저장</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -125,7 +125,10 @@
 
         // 이미지 저장 버튼 클릭 이벤트
         saveButton.addEventListener('click', () => {
-            html2canvas(captureArea).then((canvas) => {
+            html2canvas(captureArea, {
+                useCORS: true, // CORS 문제 방지
+                scale: 2 // 고해상도 캡처
+            }).then((canvas) => {
                 const link = document.createElement('a');
                 link.download = 'card-image.png'; // 저장될 파일 이름
                 link.href = canvas.toDataURL('image/png');
